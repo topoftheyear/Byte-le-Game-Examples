@@ -10,6 +10,9 @@ from game.common.adventurer_types import *
 from game.common.monster_types import *
 from game.common.stats import GameStats
 from game.controllers.controller import Controller
+from game.controllers.attack_controller import AttackController
+from game.controllers.cooldown_controller import CooldownController
+from game.controllers.healing_controller import HealingController
 
 
 class MasterController(Controller):
@@ -19,8 +22,12 @@ class MasterController(Controller):
 
         self.turn = None
 
-        self.current_floor = 0
+        self.current_floor = 1
         self.current_monster = None
+
+        self.attack_controller = AttackController()
+        self.cooldown_controller = CooldownController()
+        self.healing_controller = HealingController()
 
     # Receives all clients for the purpose of giving them the objects they will control
     def give_clients_objects(self, client):
@@ -56,8 +63,9 @@ class MasterController(Controller):
         while True:
             self.turn += 1
 
-            if self.current_monster is None:
+            if self.current_monster is not None and self.current_monster.health == 0:
                 self.current_floor += 1
+                self.current_monster = None
 
             if self.current_floor > GameStats.number_of_floors:
                 break
@@ -98,8 +106,13 @@ class MasterController(Controller):
         return args
 
     # Perform the main logic that happens per turn
-    def turn_logic(self, clients, turn):
-        pass
+    def turn_logic(self, client, turn):
+        self.healing_controller.handle_actions(client)
+        self.attack_controller.handle_actions(client, self.current_monster)
+        self.cooldown_controller.handle_actions(client, self.current_monster)
+
+        if client.adventurer.health == 0:
+            self.game_over = True
 
     # Return serialized version of game
     def create_turn_log(self, client, turn):

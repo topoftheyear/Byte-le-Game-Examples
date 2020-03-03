@@ -8,21 +8,15 @@ class Client(UserClient):
         super().__init__()
 
     def team_name(self):
-        """
-        Allows the team to set a team name.
-        :return: Your team name
-        """
-        return 'Team Name'
+        return 'Paladin'
         
     def set_adventurer_class(self):
-        return ClassType.knight
+        return ClassType.paladin
 
     # This is where your AI will decide what to do
     def take_turn(self, turn, floor, actions, adventurer, monster):
-        """
-        This is where your AI will decide what to do.
-        :param turn:        The current turn of the game.
-        :param actions:     This is the actions object that you will add effort allocations or decrees to.
-        :param world:       Generic world information
-        """
-        pass
+        if adventurer.attack_cooldown == 0:
+            actions.set_action(ActionType.attack)
+
+        if adventurer.heal_cooldown == 0 and adventurer.health < adventurer.max_health - adventurer.heal_strength:
+            actions.set_action(ActionType.heal)
