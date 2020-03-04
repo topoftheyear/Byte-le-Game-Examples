@@ -4,9 +4,9 @@ from game.common.enums import *
 
 # Runtime settings / Restrictions --------------------------------------------------------------------------------------
 # The engine requires these to operate
-MAX_TICKS = 500                                     # max number of ticks the server will run regardless of game state
+MAX_TICKS = 250                                     # max number of ticks the server will run regardless of game state
 TQDM_BAR_FORMAT = "Game running at {rate_fmt} "     # how TQDM displays the bar
-TQDM_UNITS = " turns"                               # units TQDM takes in the bar
+TQDM_UNITS = " ticks"                               # units TQDM takes in the bar
 
 MAX_SECONDS_PER_TURN = 0.1                          # max number of basic operations clients have for their turns
 

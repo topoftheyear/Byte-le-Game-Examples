@@ -9,3 +9,23 @@ class ObjectType:
     none = 0
     action = 1
     player = 2
+    character = 3
+
+
+class ClassType:
+    none = 0
+    warrior = 1
+    rogue = 2
+    tank = 3
+    paladin = 4
+    wizard = 5
+    mage = 6
+    sorcerer = 7
+    priest = 8
+
+
+class ActionType:
+    none = 0
+    attack = 1
+    skill = 2
+    defend = 3
