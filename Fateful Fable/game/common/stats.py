@@ -43,7 +43,28 @@ class GameStats(metaclass=Singleton):
             ClassType.tank: 1,
             ClassType.paladin: 2,
             ClassType.wizard: 2,
-            ClassType.mage: 2,
+            ClassType.mage: 1,
             ClassType.sorcerer: 3,
             ClassType.priest: 2,
         }
+
+        self.skill_strength = {
+            ClassType.warrior: 1,
+            ClassType.tank: 4,
+            ClassType.paladin: 25,
+            ClassType.wizard: 1,
+            ClassType.mage: 1,
+            ClassType.sorcerer: 1,
+            ClassType.priest: 10,
+        }
+
+        self.skill_duration = {
+            ClassType.rogue: 15,
+            ClassType.tank: 6,
+            ClassType.wizard: 20,
+            ClassType.mage: 10,
+        }
+
+        self.speed_for_turn = 10
+
+        self.team_size = 4

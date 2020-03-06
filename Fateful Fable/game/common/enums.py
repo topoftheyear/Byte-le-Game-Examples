@@ -10,6 +10,7 @@ class ObjectType:
     action = 1
     player = 2
     character = 3
+    effect = 4
 
 
 class ClassType:

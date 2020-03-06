@@ -1,6 +1,7 @@
 import uuid
 
 from game.common.action import Action
+from game.common.character import Character
 from game.common.game_object import GameObject
 from game.common.enums import *
 
@@ -16,6 +17,8 @@ class Player(GameObject):
         self.code = code
         self.action = action
 
+        self.team = list()
+
     def to_json(self):
         data = super().to_json()
 
@@ -23,6 +26,8 @@ class Player(GameObject):
         data['error'] = self.error
         data['team_name'] = self.team_name
         data['action'] = self.action.to_json() if self.action is not None else None
+
+        data['team'] = [t.to_json() for t in self.team]
 
         return data
 
@@ -34,6 +39,8 @@ class Player(GameObject):
         self.team_name = data['team_name']
         act = Action()
         self.action = act.from_json(data['action']) if data['action'] is not None else None
+
+        self.team = [Character(d['class_type']).from_json(d) for d in data['team']]
 
     def __str__(self):
         p = f"""ID: {self.id}
