@@ -1,28 +1,40 @@
+from game.common.character import Character
 from game.common.enums import *
 
 
 class Action:
     def __init__(self):
         self.object_type = ObjectType.action
-        self._example_action = None
+        self._moves = dict()
 
-    def set_action(self, action):
-        self._example_action = action
+    def set_action(self, user, action_type, target=None):
+        if not isinstance(user, Character):
+            return
+        if action_type not in [ActionType.none, ActionType.attack, ActionType.skill]:
+            return
+        if target is not None and not isinstance(target, Character):
+            return
+
+        self._moves[user.id] = {
+            'user': user.id,
+            'action_type': action_type,
+            'target': target.id if target is not None else None,
+        }
 
     def to_json(self):
         data = dict()
 
         data['object_type'] = self.object_type
-        data['example_action'] = self._example_action
+        data['moves'] = self._moves
 
         return data
 
     def from_json(self, data):
         self.object_type = data['object_type']
-        self._example_action = data['example_action']
+        self._moves = data['moves']
 
     def __str__(self):
         outstring = ''
-        outstring += f'Example Action: {self._example_action}\n'
+        outstring += f'Moves: {self._moves.items()}\n'
 
         return outstring

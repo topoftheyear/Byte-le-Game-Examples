@@ -29,4 +29,3 @@ class ActionType:
     none = 0
     attack = 1
     skill = 2
-    defend = 3

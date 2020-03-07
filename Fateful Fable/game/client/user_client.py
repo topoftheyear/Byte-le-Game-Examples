@@ -15,5 +15,8 @@ class UserClient:
     def team_name(self):
         return "No_Team_Name_Available"
 
-    def take_turn(self, turn, actions, world):
+    def set_team(self):
+        return None
+
+    def take_turn(self, turn, actions, my_team, enemy_team):
         raise NotImplementedError("Implement this in subclass")

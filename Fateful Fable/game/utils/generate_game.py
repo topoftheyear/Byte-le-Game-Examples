@@ -7,8 +7,7 @@ def generate():
 
     data = dict()
 
-    for x in range(1, MAX_TICKS + 1):
-        data[x] = 'data'
+    data['world'] = None
 
     # Verify logs location exists
     if not os.path.exists(GAME_MAP_DIR):
