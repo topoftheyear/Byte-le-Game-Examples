@@ -8,7 +8,10 @@ from game.utils.thread import CommunicationThread
 
 from game.common.character import Character
 from game.common.stats import GameStats
+from game.controllers.attack_controller import AttackController
 from game.controllers.controller import Controller
+from game.controllers.effect_controller import EffectController
+from game.controllers.speed_controller import SpeedController
 
 
 class MasterController(Controller):
@@ -20,12 +23,16 @@ class MasterController(Controller):
         self.game_stats = GameStats()
         self.players = list()
 
+        self.attack_controller = AttackController()
+        self.effect_controller = EffectController()
+        self.speed_controller = SpeedController()
+
     # Receives all clients for the purpose of giving them the objects they will control
     def give_clients_objects(self, clients):
         self.players = clients
 
         for client in clients:
-            thr = CommunicationThread(client.code.set_team, (), list)
+            thr = CommunicationThread(client.code.set_team, ())
             thr.start()
             thr.join(0.01)
 
@@ -61,16 +68,30 @@ class MasterController(Controller):
         self.turn = start
 
         while True:
+            dead = False
+            for player in self.players:
+                for character in player.team:
+                    if character.health == 0:
+                        player.team.remove(character)
+
+                if len(player.team) == 0:
+                    print(f"{player.team_name}'s team has been vanquished.")
+                    dead = True
+
+            if dead:
+                break
+
             yield 'world'
             self.turn += 1
 
     # Receives world data from the generated game log and is responsible for interpreting it
     def interpret_current_turn_data(self, clients, world, turn):
-        pass
+        self.speed_controller.handle_actions(clients)
+        self.effect_controller.handle_lifespan(clients)
 
     # Receive a specific client and send them what they get per turn. Also obfuscates necessary objects.
     def client_turn_arguments(self, client, turn):
-        actions = Action()
+        actions = Action(client.team)
         client.action = actions
 
         opponent = None
@@ -84,15 +105,17 @@ class MasterController(Controller):
         opponent_team = [deepcopy(c) for c in opponent.team]
 
         # Obfuscate data in objects that that player should not be able to see
-        my_team = [c.obfuscate() for c in my_team]
-        opponent_team = [c.obfuscate() for c in opponent_team]
+        [c.obfuscate() for c in my_team]
+        [c.obfuscate() for c in opponent_team]
 
         args = (self.turn, actions, my_team, opponent_team)
         return args
 
     # Perform the main logic that happens per turn
     def turn_logic(self, clients, turn):
-        pass
+        self.effect_controller.handle_actions(clients)
+        self.effect_controller.perform_effects()
+        self.attack_controller.handle_actions(clients)
 
     # Return serialized version of game
     def create_turn_log(self, clients, turn):
@@ -110,6 +133,8 @@ class MasterController(Controller):
         # Determine scores
         scores = dict()
         client1, client2 = clients
+
+
         if len(client1.team) > 1 and len(client2.team) > 1 or len(client1.team) == 0 and len(client2.team) == 0:
             scores[client1.id] = 1
             scores[client2.id] = 1

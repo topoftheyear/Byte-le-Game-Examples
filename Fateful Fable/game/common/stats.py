@@ -50,6 +50,7 @@ class GameStats(metaclass=Singleton):
 
         self.skill_strength = {
             ClassType.warrior: 1,
+            ClassType.rogue: 2,
             ClassType.tank: 4,
             ClassType.paladin: 25,
             ClassType.wizard: 1,
@@ -59,10 +60,14 @@ class GameStats(metaclass=Singleton):
         }
 
         self.skill_duration = {
+            ClassType.warrior: 0,
             ClassType.rogue: 15,
-            ClassType.tank: 6,
+            ClassType.tank: 15,
+            ClassType.paladin: 0,
             ClassType.wizard: 20,
-            ClassType.mage: 10,
+            ClassType.mage: 12,
+            ClassType.sorcerer: 0,
+            ClassType.priest: 0,
         }
 
         self.speed_for_turn = 10

@@ -48,7 +48,6 @@ class Engine:
             if self.tick_number >= MAX_TICKS:
                 break
 
-        print('Game has reached max ticks and is closing')
         self.shutdown()
 
     # Finds, checks, and instantiates clients

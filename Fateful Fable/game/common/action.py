@@ -3,9 +3,10 @@ from game.common.enums import *
 
 
 class Action:
-    def __init__(self):
+    def __init__(self, team):
         self.object_type = ObjectType.action
         self._moves = dict()
+        self._team_ids = [t.id for t in team]
 
     def set_action(self, user, action_type, target=None):
         if not isinstance(user, Character):
@@ -13,6 +14,8 @@ class Action:
         if action_type not in [ActionType.none, ActionType.attack, ActionType.skill]:
             return
         if target is not None and not isinstance(target, Character):
+            return
+        if user.id not in self._team_ids:
             return
 
         self._moves[user.id] = {
